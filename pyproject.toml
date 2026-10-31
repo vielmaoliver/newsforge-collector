@@ -1,0 +1,44 @@
+[project]
+name = "newsforge-collector"
+version = "0.1.0"
+description = "Public zero-cost fallback collector for NewsForge"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "feedparser>=6.0,<7",
+  "httpx>=0.27,<1",
+  "pydantic>=2.9,<3",
+]
+
+[project.scripts]
+newsforge-collector = "collector.run:main"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3,<9",
+  "ruff>=0.7,<1",
+  "mypy>=1.13,<2",
+]
+
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["collector"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["collector"]
+
+[[tool.mypy.overrides]]
+module = ["feedparser"]
+ignore_missing_imports = true

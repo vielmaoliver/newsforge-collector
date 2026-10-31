@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>NewsForge Test Feed</title>
+    <link>http://127.0.0.1:8765/</link>
+    <description>Local integration feed</description>
+    <item>
+      <title>NewsForge integration headline</title>
+      <link>https://example.com/integration-story</link>
+      <description>Metadata candidate for the cross-repository integration test.</description>
+      <pubDate>Sat, 31 Oct 2026 18:30:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

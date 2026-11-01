@@ -8,6 +8,7 @@ import xml.etree.ElementTree as ET
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
 from typing import Any
+from urllib.parse import urlsplit, urlunsplit
 
 import feedparser
 
@@ -15,6 +16,14 @@ from collector.models import CandidatePayload, RemoteSource
 
 _TAG_RE = re.compile(r"<[^>]+>")
 _WS_RE = re.compile(r"\s+")
+
+
+def canonicalize_feed_url(url: str) -> str:
+    split = urlsplit(url)
+    if split.hostname == "news.un.org" and split.path.startswith("/feed/view/"):
+        path = split.path.removeprefix("/feed/view")
+        return urlunsplit((split.scheme, split.netloc, path, split.query, ""))
+    return url
 
 
 def clean_text(value: str, *, max_length: int = 4000) -> str:
@@ -56,13 +65,14 @@ def parse_feed(content: bytes, source: RemoteSource, *, discovered_at: datetime 
         if not title or not url.startswith(("https://", "http://")):
             continue
         snippet = clean_text(str(entry.get("summary") or entry.get("description") or ""))
+        canonical_url = canonicalize_feed_url(url)
         results.append(
             CandidatePayload.model_validate(
                 {
-                    "candidate_hash": candidate_hash(source.id, url),
+                    "candidate_hash": candidate_hash(source.id, canonical_url),
                     "source_id": source.id,
                     "url": url,
-                    "canonical_url": url,
+                    "canonical_url": canonical_url,
                     "title": title,
                     "snippet": snippet,
                     "published_at": _feed_datetime(entry),

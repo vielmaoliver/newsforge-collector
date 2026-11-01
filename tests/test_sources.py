@@ -47,3 +47,23 @@ def test_news_sitemap_parsing() -> None:
 
 def test_clean_text_removes_markup() -> None:
     assert clean_text("<p>Hello&nbsp; <b>world</b></p>") == "Hello world"
+
+
+
+def test_news_un_feed_url_is_canonicalized_without_losing_original() -> None:
+    source = RemoteSource(
+        id="un-news-es",
+        name="Noticias ONU Español",
+        url="https://news.un.org/feed/subscribe/es/news/all/rss.xml",
+    )
+    xml = b"""<rss version='2.0'><channel><title>UN</title><item>
+      <title>ONU test</title>
+      <link>https://news.un.org/feed/view/es/story/2026/10/1542109</link>
+      <description>Resumen</description>
+    </item></channel></rss>"""
+    item = parse_feed(xml, source)[0]
+    assert str(item.url) == "https://news.un.org/feed/view/es/story/2026/10/1542109"
+    assert str(item.canonical_url) == "https://news.un.org/es/story/2026/10/1542109"
+    assert item.candidate_hash == candidate_hash(
+        "un-news-es", "https://news.un.org/es/story/2026/10/1542109"
+    )

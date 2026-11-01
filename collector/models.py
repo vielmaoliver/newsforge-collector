@@ -14,6 +14,7 @@ class RemoteSource(BaseModel):
     language: str = "es"
     country: str | None = None
     publisher_group: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_.-]{1,128}$")
+    content_mode: str = Field(default="full", pattern=r"^(full|metadata_only)$")
     categories: list[str] = Field(default_factory=list)
     etag: str | None = None
     last_modified: str | None = None

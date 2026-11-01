@@ -13,6 +13,7 @@ class RemoteSource(BaseModel):
     priority: int = 50
     language: str = "es"
     country: str | None = None
+    publisher_group: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_.-]{1,128}$")
     categories: list[str] = Field(default_factory=list)
     etag: str | None = None
     last_modified: str | None = None

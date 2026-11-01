@@ -46,6 +46,7 @@ def test_offline_collector_fetches_and_ingests() -> None:
                             "url": "https://source.example/feed.xml",
                             "priority": 50,
                             "language": "es",
+                            "publisher_group": "publisher-a",
                             "categories": [],
                         }
                     ],
@@ -81,6 +82,7 @@ def test_offline_collector_fetches_and_ingests() -> None:
     assert stats.pc_online is False
     assert stats.sources == 1
     assert stats.fetched == 1
+    assert ingested["candidates"][0]["source_id"] == "example"
     assert stats.candidates == 1
     assert stats.inserted == 1
     assert len(ingested["candidates"]) == 1
